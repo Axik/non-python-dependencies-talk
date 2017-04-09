@@ -1,0 +1,288 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Python package with non-python dependencies on load test tool example*</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=792, user-scalable=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<link rel="stylesheet" href="shower/themes/bright/styles/screen.css">
+</head>
+<body class="list">
+	<header class="caption">
+		<h1>Python package with non-python dependencies on load test tool example*</h1>
+	</header>
+	<section class="slide cover" id="Cover"><div>
+		<h2>Python package with non-python dependencies on load test tool example*</h2>
+		<p>Kyrylo Perevozchykov @ DataRobot</p>
+		<p>github.com/Axik</p>
+		<p>twitter.com/axique</p>
+		<!--
+			To apply styles to the certain slides
+			set slide ID to get needed elements
+			-->
+		<style>
+			#Cover {
+				background-color: #008DD1;
+			}
+			#Cover h2 {
+				margin:30px 0 0;
+				color: #FFF;
+				text-align:center;
+				font-size:70px;
+				}
+			#Cover p {
+				margin:50px 0 0;
+				text-align:center;
+				color:#FFF;
+				font-style:italic;
+				font-size:20px;
+				}
+				#Cover p a {
+					color:#FFF;
+					}
+			#Cover img {
+				width:0.72em;
+				height:0.72em;
+				}
+		</style>
+	</div></section>
+	<section class="slide"><div>
+		<h2></h2>
+		<img src="https://dl.dropboxusercontent.com/spa/x3hnf220lzqoaxi/zq2ljnfe.png" alt="" />
+		<p>
+			Easy-to-use Machine Learning service that helps people build models and predict on them.
+		</p>
+	</div></section>
+	<section class="slide"><div>
+		<h3>Warning</h3>
+		<h2></h2>
+		<p>
+			<img src="https://cdn.arstechnica.net/wp-content/uploads/2014/02/warning-640x360.png" alt="" width="60%"/>
+		</p>
+		<p>
+		Данные практики далеко не "best" и не претендуют на единственную правильность
+		</p>
+	</div></section>
+	<section class="slide"><div>
+		<h3>Case #1</h3>
+		<h2>Load-balancing tool</h2>
+		<p>
+			Loadorobot:
+			<ul>
+				<li>Python package с CLI-интерфейсом </li>
+				<li>Использует wrk и wrk2 для создания нагрузки на кластер</li>
+				<li>Использует pandas для дата-сатанистских штучек</li>
+			</ul>
+		</p>
+	</div></section>
+	<section class="slide"><div>
+		<h3>Case #1</h3>
+		<h2>Load-balancing tool</h2>
+		<p>
+			Проблемы:
+			<ul>
+				<li>wrk и wrk2 устанавливаются только через git clone + make</li>
+				<li>время прохода тестов ~3 секунды, установка окружения - 9 минут</li>
+			</ul>
+		</p>
+	</div></section>
+	<section class="slide"><div>
+		<h3>Case #1</h3>
+		<p>
+		<img src="https://wiki.jenkins-ci.org/download/attachments/78676506/docker-jenkins.png" alt="" width="75%"/>
+		</p>
+	</div>
+	</section>
+	<section class="slide"><div>
+		<h3>Решение</h3>
+		<p>
+			Разделить зависимости на base и питоно-пакет:
+			<ul>
+				<li>Используем наследование docker images</li>
+				<li>BASE_VERSION, VERSION файлы используются для меток базового и "пакетного" образа docker</li>
+			</ul>
+		</p>
+	</div>
+	</section>
+	<section class="slide"><div>
+		<h3>Base Dockerfile</h3>
+		<img src="https://dl.dropboxusercontent.com/spa/x3hnf220lzqoaxi/xoo72pzr.png" width="100%">
+	</div>
+	</section>
+	<section class="slide"><div>
+		<h3>Package Dockerfile</h3>
+		<img src="https://dl.dropboxusercontent.com/spa/x3hnf220lzqoaxi/35cjevg8.png" width="100%">
+	</div>
+	</section>
+	<section class="slide"><div>
+		<h2>Pros and cons</h3>
+		<figure>
+		Pros:
+		<ul>
+			<li>контейнеризиравоно - можем запускать на любой машине где есть докер</li>
+			<li>время запуска тестов уменьшилось - c ~10 минут до 30 секунд</li>
+			<li>установка через pip install + docker pull</li>
+		</ul>
+		</figure>
+	</div></section>
+	<section class="slide"><div>
+		<h2>Pros and cons</h3>
+		<figure>
+
+		Cons:
+		<ul>
+			<li>усложнено добавление новых зависимостей</li>
+			<li>куча мелких неудобств связанных с монтированием файловой системы при тестах и настройках всего этого добра</li>
+			<li>одного pip install всё ещё недостаточно</li>
+		</ul>
+		</figure>
+	</div></section>
+	<section class="slide"><div>
+		<h2>Обновление базового образа</h2>
+		<p>
+		<ol>
+		<li>PR с добавлением зависимости + инкрементим версию в файлике BASE_VERSION</li>
+		<li>Запуск jenkins job через комментарий к PR.</li>
+		</ol>
+		</p>
+		<img src="https://dl.dropboxusercontent.com/spa/x3hnf220lzqoaxi/xydb4awa.png" width="45%" alt="" />
+	</div></section>
+	<section class="slide shout">
+	<div>
+		<h2 class="shout">click is awesome</h2>
+	</div>
+	</section>
+
+	<section class="slide"><div>
+		<h2>Click is awesome for writing CLI tools with python</h3>
+		<div>
+			<ul>
+				<li>Фтопку argparse</li>
+				<li>Валидирование входных параметров из коробки</li>
+				<li>Удобен для тестов, не нужно функциональных тестов с subprocess.call и прочей белиберды</li>
+			</ul>
+		</div>
+	</div></section>
+	<section class="slide"><div>
+		<h2>Example of reusable option</h2>
+		<img src="https://dl.dropboxusercontent.com/spa/x3hnf220lzqoaxi/qq1u47x0.png" width="100%">
+	</div></section>
+
+
+
+	<section class="slide"><div>
+		<h2>Case #2: test any predictions</h2>
+		<p>Проблемы</p>
+		<ul>
+			<li>Несколько API, чтобы сделать одни и теже прогнозы</li>
+			<li>Несколько клиентских библиотек, чтобы сделать одни и теже прогнозы</li>
+			<li>Тяжёлые питоно-зависимости (scipy + pandas + numpy + scikit-learn)</li>
+			<li>Результаты должны быть одинаковы с погрешностью 1-e5</li>
+		</ul>
+	</div></section>
+
+	<section class="slide"><div>
+		<h2>Case #2: test any predictions</h2>
+		<p>Проблемы/требования</p>
+		<ul>
+			<li>Запуск java archive (jar)</li>
+			<li>В будущем запуск R</li>
+			<li>Интерфейс для тестов через python код</li>
+		</ul>
+
+	</div></section>
+
+	<section class="slide"><div>
+		<h2>Case #2: test any predictions</h2>
+		<p>Желаемый интерфейс</p>
+		<code>assert test_any_possible_prediction(model, data)</code>
+		</div>
+	</section>
+	<section class="slide"><div>
+		<h2>Case #2: test any predictions</h2>
+		<p>
+		<img src="https://wiki.jenkins-ci.org/download/attachments/78676506/docker-jenkins.png" alt="" width="75%"/>
+		</p>
+	</div>
+	</section>
+
+	<section class="slide"><div>
+		<h2>Case #2: test any predictions</h2>
+		<p>Пример запуска извне</p>
+		<img src="https://dl.dropboxusercontent.com/spa/x3hnf220lzqoaxi/jvka07et.png" width="100%">
+		</div>
+	</section>
+
+	<section class="slide"><div>
+
+		<h2>Case #2: test any predictions</h2>
+		<figure>
+		<p> Внутри драйвера</p>
+		<img src="https://dl.dropboxusercontent.com/spa/x3hnf220lzqoaxi/0r-kssbp.png" width="100%">
+		</figure>
+	</div>
+	</section>
+
+	<section class="slide"><div>
+
+		<h2>Case #2: test any predictions</h2>
+		Сплошной профит?
+		</figure>
+	</div>
+	</section>
+
+	<section class="slide"><div>
+		<h2>Выводы</h2>
+
+		<ol>
+			<li>Уменьшается время холодного старта</li>
+			<li class="next">Уменьшается сложность холодного старта</li>
+			<li class="next">Увеличиваются операционные затраты</li>
+			<li class="next">Сложность поддержки и фиксировании зависимости между кодом и контейнером</li>
+		</ol>
+	</div></section>
+
+	<section class="slide"><div>
+		<h2>Links</h2>
+		<ul>
+			<li><a href="http://click.pocoo.org/5/">Click</li>
+			</a></li>
+			<li><a href="https://github.com/wg/wrk">wrk</a></li>
+			<li><a href="https://github.com/giltene/wrk2">wrk2</a></li>
+			<li><a href="https://www.smartfile.com/blog/dockerizing-a-python-flask-application/">Dockerizing a Python Flask Application</a></li>
+			<li><a href="https://packaging.python.org">Python packaging</a></li>
+		</ul>
+		</div></section>
+
+<section class="slide shout" id="SeeMore"><div>
+		<h2>
+		<p>
+			Questions?
+		</p>
+		<p>
+			<img src="pictures/github.png" alt=""> <a href="https://github.com/Axik">github.com/Axik</a>
+		</p>
+		<p>
+		<img src="pictures/twitter.png" alt=""> <a href="https://github.com/Axik">twitter.com/axique</a></h2>
+		</p>
+
+		<h2></h2>
+		<style>
+			#Picture h2 {
+				color:#FFF;
+				}
+			#SeeMore h2 {
+				font-size:45px
+				}
+			#SeeMore img {
+				width:0.72em;
+				height:0.72em;
+				}
+		</style>
+	</div></section>
+	<div class="progress"><div></div></div>
+	<script src="shower/shower.min.js"></script>
+	<!-- Copyright © 2015 Web-academy.com -->
+	<!-- Photos by John Carey, fiftyfootshadows.net -->
+</body>
+</html>
